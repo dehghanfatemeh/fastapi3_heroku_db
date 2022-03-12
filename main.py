@@ -13,19 +13,20 @@ class Database:
         self.db_connection = sqlite3.connect(dbname)
     
     def execute(self,query):
-        db_cusrsor = self.db_connection.cursor()
-        result = db_cusrsor.execute(query).fetchall()
-        db_cusrsor.close()
+        db_cursor = self.db_connection.cursor()
+        result = db_cursor.execute(query).fetchall()
+        db_cursor.close()
         self.db_connection.commit()
         return result
 
 DB=Database()
-DB.execute(
-            'CREATE TABLE IF NOT EXISTS students \
-            (name STRING PRIMARY KEY,\
-            lesson1 INTEGER, \
-            lesson2 INTEGER, \
-            lesson3 INTEGER)')
+DB.execute("""
+            CREATE TABLE IF NOT EXISTS students 
+            (name STRING PRIMARY KEY,
+            lesson1 INTEGER, 
+            lesson2 INTEGER, 
+            lesson3 INTEGER)
+""")
 
 
 class Student(BaseModel):
@@ -43,10 +44,11 @@ def read():
 @app.get('/average')
 def average():
     DB = Database()
-    result = DB.execute(
-                'SELECT name, \
-                (lesson1+ lesson2+ lesson3 )/3 \
-                as average FROM students')
+    result = DB.execute("""
+                SELECT name, 
+                (lesson1+ lesson2+ lesson3 )/3 
+                as average FROM students
+    """)
     return result
 
 # ====================================================
